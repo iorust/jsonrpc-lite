@@ -114,7 +114,7 @@ impl Error {
         }
         let message = map.get("message").and_then(|val| {
             if val.is_string() {
-                Some(val.as_string().unwrap().to_string())
+                Some(val.as_str().unwrap().to_string())
             } else {
                 None
             }

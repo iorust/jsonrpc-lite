@@ -161,10 +161,10 @@ impl JsonRPC {
 	pub fn get_method<'a>(&'a self) -> Option<&'a str> {
 		match self {
             &JsonRPC::Request(ref map) => {
-				Some(map.get("method").unwrap().as_string().unwrap())
+				Some(map.get("method").unwrap().as_str().unwrap())
 			}
             &JsonRPC::Notification(ref map) => {
-				Some(map.get("method").unwrap().as_string().unwrap())
+				Some(map.get("method").unwrap().as_str().unwrap())
 			}
             _ => None,
         }
@@ -251,7 +251,7 @@ impl JsonRPC {
         if id.is_none() {
             let method = json.get("method").and_then(|val| {
                 if val.is_string() {
-                    Some(val.as_string().unwrap())
+                    Some(val.as_str().unwrap())
                 } else {
                     None
                 }
@@ -281,7 +281,7 @@ impl JsonRPC {
         if json.contains_key("method") {
             let method = json.get("method").and_then(|val| {
                 if val.is_string() {
-                    Some(val.as_string().unwrap())
+                    Some(val.as_str().unwrap())
                 } else {
                     None
                 }
