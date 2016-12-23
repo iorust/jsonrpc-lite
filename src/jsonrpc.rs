@@ -22,6 +22,7 @@ impl Id {
             &Value::String(ref val) => Ok(Id::Str(val.to_string())),
             &Value::I64(val) => Ok(Id::Num(val)),
             &Value::Null => Ok(Id::Null),
+            &Value::U64(val) => Ok(Id::Num(val as i64)),
             _ => Err(Error::invalid_request()),
         }
     }
