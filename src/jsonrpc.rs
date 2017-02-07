@@ -19,14 +19,10 @@ impl Id {
         match val {
             &Value::String(ref val) => Ok(Id::Str(val.to_string())),
             &Value::Number(ref val) => {
-                Ok(Id::Num({
-                    if val.is_i64() {
-                        val.as_i64().unwrap()
-                    } else if val.is_u64() {
-                        val.as_u64().unwrap() as i64
-                    } else {
-                        return Err(Error::invalid_request());
-                    }
+                Ok(Id::Num(if let Some(n) = val.as_i64() {
+                    n
+                } else {
+                    return Err(Error::invalid_request());
                 }))
             }
             &Value::Null => Ok(Id::Null),
@@ -167,16 +163,16 @@ impl JsonRPC {
 
     pub fn get_method<'a>(&'a self) -> Option<&'a str> {
         match self {
-            &JsonRPC::Request(ref v) |
-            &JsonRPC::Notification(ref v) => Some(v["method"].as_str().unwrap()),
+            &JsonRPC::Notification(ref v) |
+            &JsonRPC::Request(ref v) => Some(v["method"].as_str().unwrap()),
             _ => None,
         }
     }
 
     pub fn get_params(&self) -> Option<Params> {
         match self {
-            &JsonRPC::Request(ref v) |
-            &JsonRPC::Notification(ref v) => Params::from_value(&v["params"]).ok(),
+            &JsonRPC::Notification(ref v) |
+            &JsonRPC::Request(ref v) => Params::from_value(&v["params"]).ok(),
             _ => None,
         }
     }

@@ -1,6 +1,6 @@
 [package]
 name = "jsonrpc-lite"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["zensh <admin@zensh.com>"]
 description = "JSON-RPC 2.0 Specification serialization for Rust."
 documentation = "https://iorust.github.io/jsonrpc-lite/jsonrpc_lite"
