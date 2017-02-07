@@ -8,6 +8,7 @@
 //! JSON-RPC 2.0 Specification serialization for Rust.
 
 extern crate serde;
+#[macro_use]
 extern crate serde_json;
 
 pub use self::jsonrpc::{Id, Params, JsonRPC};

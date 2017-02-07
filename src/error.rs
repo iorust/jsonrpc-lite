@@ -1,14 +1,11 @@
 //! JSON-RPC 2.0 errors
-
-extern crate serde;
-extern crate serde_json;
-
 use std::error;
 use std::result;
 use std::fmt;
 use std::string::ToString;
 
-use serde_json::{Value, Map, to_value};
+use serde_json::{Value, Map};
+use serde_json::Result as SerdeResult;
 use serde_json::value::ToJson;
 
 /// Error Code
@@ -102,48 +99,37 @@ impl Error {
             return Err(Error::invalid_request());
         }
         let map: &Map<String, Value> = map.unwrap();
-        let code = map.get("code").and_then(|val| {
-            if val.is_i64() {
-                Some(val.as_i64().unwrap())
-            } else {
-                None
-            }
-        });
+        let code = map.get("code").and_then(Value::as_i64);
         if code.is_none() {
             return Err(Error::invalid_request());
         }
-        let message = map.get("message").and_then(|val| {
-            if val.is_string() {
-                Some(val.as_str().unwrap().to_string())
-            } else {
-                None
-            }
-        });
+        let message = map.get("message").and_then(Value::as_str).and_then(|s| Some(s.to_string()));
         if message.is_none() {
             return Err(Error::invalid_request());
         }
-        let data = map.get("data");
+        let data = map.get("data").and_then(|d| Some(d.clone()));
         Ok(Error {
             code: code.unwrap(),
             message: message.unwrap(),
-            data: if data.is_none() {
-                None
-            } else {
-                Some(data.unwrap().clone())
-            },
+            data: data,
         })
     }
 }
 
 impl ToJson for Error {
-    fn to_json(&self) -> Value {
-        let mut map = Map::new();
-        map.insert("code".to_string(), Value::I64(self.code));
-        map.insert("message".to_string(), to_value(&self.message));
+    fn to_json(&self) -> SerdeResult<Value> {
         if let Some(ref data) = self.data {
-            map.insert("data".to_string(), to_value(data));
-        };
-        Value::Object(map)
+            Ok(json!({
+                "code": self.code,
+                "message": &self.message,
+                "data": data,
+            }))
+        } else {
+            Ok(json!({
+                "code": self.code,
+                "message": &self.message,
+            }))
+        }
     }
 }
 
@@ -155,7 +141,7 @@ impl error::Error for Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(&self.to_json(), f)
+        fmt::Display::fmt(&self.to_json().unwrap(), f)
     }
 }
 
