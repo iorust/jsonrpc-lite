@@ -9,18 +9,20 @@ use jsonrpc_lite::{JsonRPC, Id, Params};
 #[test]
 fn request() {
     let jsonrpc = JsonRPC::request(&Id::Num(0), "test");
-    assert_eq!(jsonrpc.to_json(),
-        from_str::<Value>(r#"{"id": 0, "jsonrpc": "2.0", "method": "test"}"#).unwrap());
+    assert_eq!(jsonrpc.to_json().unwrap(),
+               from_str::<Value>(r#"{"id": 0, "jsonrpc": "2.0", "method": "test"}"#).unwrap());
 }
 
 #[test]
 fn request_with_params() {
-    let jsonrpc = JsonRPC::request_with_params(&Id::Str("a".to_string()), "test",
-        &Params::Array(vec![Value::Bool(true)]));
+    let jsonrpc = JsonRPC::request_with_params(&Id::Str("a".to_string()),
+                                               "test",
+                                               &Params::Array(vec![Value::Bool(true)]));
     // println!("{:?}", jsonrpc);
-    assert_eq!(jsonrpc.to_json(),
-        from_str::<Value>(r#"{"id": "a", "jsonrpc": "2.0", "method": "test",
-            "params": [true]}"#).unwrap());
+    assert_eq!(jsonrpc.to_json().unwrap(),
+               from_str::<Value>(r#"{"id": "a", "jsonrpc": "2.0", "method": "test",
+            "params": [true]}"#)
+                   .unwrap());
 }
 
 // static BATCH_JSON: &'static str = r#"[

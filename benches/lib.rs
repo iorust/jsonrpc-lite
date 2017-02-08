@@ -4,7 +4,7 @@ extern crate test;
 extern crate jsonrpc_lite;
 
 use test::Bencher;
-use jsonrpc_lite::{JsonRPC};
+use jsonrpc_lite::JsonRPC;
 
 const BATCH_JSON: &'static str = r#"[
   {"jsonrpc": "2.0", "method": "sum", "params": [1,2,4], "id": "1"},
@@ -34,7 +34,5 @@ const BATCH_JSON: &'static str = r#"[
 
 #[bench]
 fn parse(b: &mut Bencher) {
-    b.iter(|| {
-        JsonRPC::parse(BATCH_JSON);
-    });
+    b.iter(|| { JsonRPC::parse(BATCH_JSON); });
 }

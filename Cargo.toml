@@ -1,6 +1,6 @@
 [package]
 name = "jsonrpc-lite"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["zensh <admin@zensh.com>"]
 description = "JSON-RPC 2.0 Specification serialization for Rust."
 documentation = "https://iorust.github.io/jsonrpc-lite/jsonrpc_lite"
@@ -11,5 +11,5 @@ keywords = ["jsonrpc", "json-rpc", "json", "rpc", "serde"]
 license = "MIT/Apache-2.0"
 
 [dependencies]
-serde = "0.8"
-serde_json = "0.8"
+serde = "0.9"
+serde_json = "0.9"
