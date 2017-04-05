@@ -84,7 +84,7 @@ pub enum JsonRPC {
     /// Error Response
     Error(Value),
     /// Error Request
-    ErrorRequst(Error),
+    ErrorRequest(Error),
 }
 
 impl JsonRPC {
@@ -197,7 +197,7 @@ impl JsonRPC {
 
         let json = from_str::<Value>(json);
         if json.is_err() {
-            res.push(JsonRPC::ErrorRequst(Error::parse_error()));
+            res.push(JsonRPC::ErrorRequest(Error::parse_error()));
             return res;
         }
         let json = json.unwrap();
@@ -211,7 +211,7 @@ impl JsonRPC {
         }
 
         if res.len() == 0 {
-            res.push(JsonRPC::ErrorRequst(Error::invalid_request()));
+            res.push(JsonRPC::ErrorRequest(Error::invalid_request()));
         }
 
         res
@@ -224,7 +224,7 @@ impl JsonRPC {
                 if id == Id::Null {
                     let method = json.get("method").and_then(Value::as_str);
                     if method.is_none() {
-                        return JsonRPC::ErrorRequst(Error::method_not_found());
+                        return JsonRPC::ErrorRequest(Error::method_not_found());
                     }
 
                     let params = json.get("params");
@@ -233,14 +233,14 @@ impl JsonRPC {
                     }
                     let params = Params::from_value(params.unwrap());
                     if params.is_err() {
-                        return JsonRPC::ErrorRequst(Error::invalid_request());
+                        return JsonRPC::ErrorRequest(Error::invalid_request());
                     }
                     return JsonRPC::notification_with_params(method.unwrap(), &params.unwrap());
                 } else {
                     if let Some(method) = json.get("method") {
                         let method = method.as_str();
                         if method.is_none() {
-                            return JsonRPC::ErrorRequst(Error::method_not_found());
+                            return JsonRPC::ErrorRequest(Error::method_not_found());
                         }
 
                         let params = json.get("params");
@@ -249,7 +249,7 @@ impl JsonRPC {
                         }
                         let params = Params::from_value(params.unwrap());
                         if params.is_err() {
-                            return JsonRPC::ErrorRequst(Error::invalid_request());
+                            return JsonRPC::ErrorRequest(Error::invalid_request());
                         }
                         return JsonRPC::request_with_params(&id, method.unwrap(), &params.unwrap());
 
@@ -258,7 +258,7 @@ impl JsonRPC {
                     } else if let Some(error) = json.get("error") {
                         let error = Error::from_value(error);
                         if error.is_err() {
-                            return JsonRPC::ErrorRequst(Error::invalid_request());
+                            return JsonRPC::ErrorRequest(Error::invalid_request());
                         }
 
                         return JsonRPC::error(&id, &error.unwrap());
@@ -267,7 +267,7 @@ impl JsonRPC {
             }
         }
 
-        JsonRPC::ErrorRequst(Error::invalid_request())
+        JsonRPC::ErrorRequest(Error::invalid_request())
     }
 }
 
@@ -279,7 +279,7 @@ impl ToJson for JsonRPC {
             &JsonRPC::Notification(ref val) => to_value(val),
             &JsonRPC::Success(ref val) => to_value(val),
             &JsonRPC::Error(ref val) => to_value(val),
-            &JsonRPC::ErrorRequst(ref val) => val.to_json(),
+            &JsonRPC::ErrorRequest(ref val) => val.to_json(),
         }
     }
 }
