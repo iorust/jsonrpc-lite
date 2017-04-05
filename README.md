@@ -6,9 +6,10 @@ JSON-RPC 2.0 Specification serialization for Rust.
 [![Build Status][travis-image]][travis-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
 [![Crates downloads][downloads-image]][downloads-url]
+[![Docs Status][docs-image]][docs-url]
 
 ## API
-### Documentation https://iorust.github.io/jsonrpc-lite/jsonrpc_lite
+### Documentation https://docs.rs/jsonrpc-lite
 
 ```Rust
 extern crate jsonrpc_lite;
@@ -26,3 +27,6 @@ use jsonrpc_lite::{JsonRPC, Id, Params, Error, ErrorCode, Result};
 
 [downloads-image]: https://img.shields.io/crates/d/jsonrpc-lite.svg
 [downloads-url]: https://crates.io/crates/jsonrpc-lite
+
+[docs-image]: https://docs.rs/jsonrpc-lite/badge.svg
+[docs-url]: https://docs.rs/jsonrpc-lite
