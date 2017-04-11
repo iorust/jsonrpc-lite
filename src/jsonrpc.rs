@@ -16,16 +16,16 @@ pub enum Id {
 
 impl Id {
     fn from_value(val: &Value) -> Result<Id> {
-        match val {
-            &Value::String(ref val) => Ok(Id::Str(val.to_string())),
-            &Value::Number(ref val) => {
+        match *val {
+            Value::String(ref val) => Ok(Id::Str(val.to_string())),
+            Value::Number(ref val) => {
                 Ok(Id::Num(if let Some(n) = val.as_i64() {
-                    n
-                } else {
-                    return Err(Error::invalid_request());
-                }))
+                               n
+                           } else {
+                               return Err(Error::invalid_request());
+                           }))
             }
-            &Value::Null => Ok(Id::Null),
+            Value::Null => Ok(Id::Null),
             _ => Err(Error::invalid_request()),
         }
     }
@@ -33,9 +33,9 @@ impl Id {
 
 impl ToJson for Id {
     fn to_json(&self) -> SerdeResult<Value> {
-        match self {
-            &Id::Num(ref val) => to_value(val),
-            &Id::Str(ref val) => to_value(val),
+        match *self {
+            Id::Num(ref val) => to_value(val),
+            Id::Str(ref val) => to_value(val),
             _ => Ok(Value::Null),
         }
     }
@@ -53,9 +53,9 @@ pub enum Params {
 
 impl Params {
     fn from_value(val: &Value) -> Result<Params> {
-        match val {
-            &Value::Array(ref v) => Ok(Params::Array(v.clone())),
-            &Value::Object(ref v) => Ok(Params::Map(v.clone())),
+        match *val {
+            Value::Array(ref v) => Ok(Params::Array(v.clone())),
+            Value::Object(ref v) => Ok(Params::Map(v.clone())),
             _ => Err(Error::invalid_request()),
         }
     }
@@ -63,9 +63,9 @@ impl Params {
 
 impl ToJson for Params {
     fn to_json(&self) -> SerdeResult<Value> {
-        match self {
-            &Params::Array(ref val) => to_value(val),
-            &Params::Map(ref val) => to_value(val),
+        match *self {
+            Params::Array(ref val) => to_value(val),
+            Params::Map(ref val) => to_value(val),
             _ => Ok(Value::Null),
         }
     }
@@ -99,8 +99,8 @@ impl JsonRPC {
 
     /// Creates a JSON-RPC 2.0 request object with params
     pub fn request_with_params(id: &Id, method: &str, params: &Params) -> Self {
-        match params {
-            &Params::None => Self::request(id, method),
+        match *params {
+            Params::None => Self::request(id, method),
             _ => {
                 JsonRPC::Request(json!({
                     "jsonrpc": "2.0",
@@ -122,8 +122,8 @@ impl JsonRPC {
 
     /// Creates a JSON-RPC 2.0 notification object with params
     pub fn notification_with_params(method: &str, params: &Params) -> Self {
-        match params {
-            &Params::None => Self::notification(method),
+        match *params {
+            Params::None => Self::notification(method),
             _ => {
                 JsonRPC::Notification(json!({
                     "jsonrpc": "2.0",
@@ -153,40 +153,40 @@ impl JsonRPC {
     }
 
     pub fn get_id(&self) -> Option<Id> {
-        match self {
-            &JsonRPC::Request(ref v) |
-            &JsonRPC::Success(ref v) |
-            &JsonRPC::Error(ref v) => Some(Id::from_value(&v["id"]).unwrap()),
+        match *self {
+            JsonRPC::Request(ref v) |
+            JsonRPC::Success(ref v) |
+            JsonRPC::Error(ref v) => Some(Id::from_value(&v["id"]).unwrap()),
             _ => None,
         }
     }
 
-    pub fn get_method<'a>(&'a self) -> Option<&'a str> {
-        match self {
-            &JsonRPC::Notification(ref v) |
-            &JsonRPC::Request(ref v) => Some(v["method"].as_str().unwrap()),
+    pub fn get_method(&self) -> Option<&str> {
+        match *self {
+            JsonRPC::Notification(ref v) |
+            JsonRPC::Request(ref v) => Some(v["method"].as_str().unwrap()),
             _ => None,
         }
     }
 
     pub fn get_params(&self) -> Option<Params> {
-        match self {
-            &JsonRPC::Notification(ref v) |
-            &JsonRPC::Request(ref v) => Params::from_value(&v["params"]).ok(),
+        match *self {
+            JsonRPC::Notification(ref v) |
+            JsonRPC::Request(ref v) => Params::from_value(&v["params"]).ok(),
             _ => None,
         }
     }
 
-    pub fn get_result<'a>(&'a self) -> Option<&'a Value> {
-        match self {
-            &JsonRPC::Success(ref v) => Some(&v["result"]),
+    pub fn get_result(&self) -> Option<&Value> {
+        match *self {
+            JsonRPC::Success(ref v) => Some(&v["result"]),
             _ => None,
         }
     }
 
-    pub fn get_error<'a>(&'a self) -> Option<&'a Value> {
-        match self {
-            &JsonRPC::Error(ref v) => Some(&v["error"]),
+    pub fn get_error(&self) -> Option<&Value> {
+        match *self {
+            JsonRPC::Error(ref v) => Some(&v["error"]),
             _ => None,
         }
     }
@@ -210,7 +210,7 @@ impl JsonRPC {
             res.push(Self::parse_object(&json));
         }
 
-        if res.len() == 0 {
+        if res.is_empty() {
             res.push(JsonRPC::ErrorRequest(Error::invalid_request()));
         }
 
@@ -236,33 +236,31 @@ impl JsonRPC {
                         return JsonRPC::ErrorRequest(Error::invalid_request());
                     }
                     return JsonRPC::notification_with_params(method.unwrap(), &params.unwrap());
-                } else {
-                    if let Some(method) = json.get("method") {
-                        let method = method.as_str();
-                        if method.is_none() {
-                            return JsonRPC::ErrorRequest(Error::method_not_found());
-                        }
-
-                        let params = json.get("params");
-                        if params.is_none() {
-                            return JsonRPC::request(&id, method.unwrap());
-                        }
-                        let params = Params::from_value(params.unwrap());
-                        if params.is_err() {
-                            return JsonRPC::ErrorRequest(Error::invalid_request());
-                        }
-                        return JsonRPC::request_with_params(&id, method.unwrap(), &params.unwrap());
-
-                    } else if let Some(result) = json.get("result") {
-                        return JsonRPC::success(&id, result);
-                    } else if let Some(error) = json.get("error") {
-                        let error = Error::from_value(error);
-                        if error.is_err() {
-                            return JsonRPC::ErrorRequest(Error::invalid_request());
-                        }
-
-                        return JsonRPC::error(&id, &error.unwrap());
+                } else if let Some(method) = json.get("method") {
+                    let method = method.as_str();
+                    if method.is_none() {
+                        return JsonRPC::ErrorRequest(Error::method_not_found());
                     }
+
+                    let params = json.get("params");
+                    if params.is_none() {
+                        return JsonRPC::request(&id, method.unwrap());
+                    }
+                    let params = Params::from_value(params.unwrap());
+                    if params.is_err() {
+                        return JsonRPC::ErrorRequest(Error::invalid_request());
+                    }
+                    return JsonRPC::request_with_params(&id, method.unwrap(), &params.unwrap());
+
+                } else if let Some(result) = json.get("result") {
+                    return JsonRPC::success(&id, result);
+                } else if let Some(error) = json.get("error") {
+                    let error = Error::from_value(error);
+                    if error.is_err() {
+                        return JsonRPC::ErrorRequest(Error::invalid_request());
+                    }
+
+                    return JsonRPC::error(&id, &error.unwrap());
                 }
             }
         }
@@ -274,12 +272,12 @@ impl JsonRPC {
 impl ToJson for JsonRPC {
     /// Converts a JSON-RPC 2.0 object to a JSON value
     fn to_json(&self) -> SerdeResult<Value> {
-        match self {
-            &JsonRPC::Request(ref val) => to_value(val),
-            &JsonRPC::Notification(ref val) => to_value(val),
-            &JsonRPC::Success(ref val) => to_value(val),
-            &JsonRPC::Error(ref val) => to_value(val),
-            &JsonRPC::ErrorRequest(ref val) => val.to_json(),
+        match *self {
+            JsonRPC::Request(ref val) |
+            JsonRPC::Notification(ref val) |
+            JsonRPC::Success(ref val) |
+            JsonRPC::Error(ref val) => to_value(val),
+            JsonRPC::ErrorRequest(ref val) => val.to_json(),
         }
     }
 }
