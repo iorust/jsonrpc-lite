@@ -100,7 +100,7 @@ pub struct Error {
 /// [JSON-RPC 2.0 Specification](http://www.jsonrpc.org/specification).
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum JsonRPC {
+pub enum JsonRpc {
     /// Request object
     Request(Request),
     /// Notification object
@@ -111,10 +111,10 @@ pub enum JsonRPC {
     Error(Error),
 }
 
-impl JsonRPC {
+impl JsonRpc {
     /// Creates a JSON-RPC 2.0 request object without params
     pub fn request<I: Into<Id>>(id: I, method: &str) -> Self {
-        JsonRPC::Request(Request {
+        JsonRpc::Request(Request {
             jsonrpc: String::from("2.0"),
             method: String::from(method),
             params: None,
@@ -128,7 +128,7 @@ impl JsonRPC {
         method: &str,
         params: P,
     ) -> Self {
-        JsonRPC::Request(Request {
+        JsonRpc::Request(Request {
             jsonrpc: String::from("2.0"),
             method: String::from(method),
             params: Some(params.into()),
@@ -138,7 +138,7 @@ impl JsonRPC {
 
     /// Creates a JSON-RPC 2.0 notification object without params
     pub fn notification(method: &str) -> Self {
-        JsonRPC::Notification(Notification {
+        JsonRpc::Notification(Notification {
             jsonrpc: String::from("2.0"),
             method: String::from(method),
             params: None,
@@ -147,7 +147,7 @@ impl JsonRPC {
 
     /// Creates a JSON-RPC 2.0 notification object with params
     pub fn notification_with_params<P: Into<Params>>(method: &str, params: P) -> Self {
-        JsonRPC::Notification(Notification {
+        JsonRpc::Notification(Notification {
             jsonrpc: String::from("2.0"),
             method: String::from(method),
             params: Some(params.into()),
@@ -156,7 +156,7 @@ impl JsonRPC {
 
     /// Creates a JSON-RPC 2.0 success response object
     pub fn success<I: Into<Id>>(id: I, result: &Value) -> Self {
-        JsonRPC::Success(Success {
+        JsonRpc::Success(Success {
             jsonrpc: String::from("2.0"),
             result: result.clone(),
             id: id.into(),
@@ -165,7 +165,7 @@ impl JsonRPC {
 
     /// Creates a JSON-RPC 2.0 error response object
     pub fn error<I: Into<Id>>(id: I, error: RpcError) -> Self {
-        JsonRPC::Error(Error {
+        JsonRpc::Error(Error {
             jsonrpc: String::from("2.0"),
             error,
             id: id.into(),
@@ -174,39 +174,39 @@ impl JsonRPC {
 
     pub fn get_id(&self) -> Option<Id> {
         match *self {
-            JsonRPC::Request(ref v) => Some(v.id.clone()),
-            JsonRPC::Success(ref v) => Some(v.id.clone()),
-            JsonRPC::Error(ref v) => Some(v.id.clone()),
+            JsonRpc::Request(ref v) => Some(v.id.clone()),
+            JsonRpc::Success(ref v) => Some(v.id.clone()),
+            JsonRpc::Error(ref v) => Some(v.id.clone()),
             _ => None,
         }
     }
 
     pub fn get_method(&self) -> Option<&str> {
         match *self {
-            JsonRPC::Notification(ref v) => Some(&v.method),
-            JsonRPC::Request(ref v) => Some(&v.method),
+            JsonRpc::Notification(ref v) => Some(&v.method),
+            JsonRpc::Request(ref v) => Some(&v.method),
             _ => None,
         }
     }
 
     pub fn get_params(&self) -> Option<Params> {
         match *self {
-            JsonRPC::Notification(ref v) => v.params.as_ref().cloned(),
-            JsonRPC::Request(ref v) => v.params.as_ref().cloned(),
+            JsonRpc::Notification(ref v) => v.params.as_ref().cloned(),
+            JsonRpc::Request(ref v) => v.params.as_ref().cloned(),
             _ => None,
         }
     }
 
     pub fn get_result(&self) -> Option<&Value> {
         match *self {
-            JsonRPC::Success(ref v) => Some(&v.result),
+            JsonRpc::Success(ref v) => Some(&v.result),
             _ => None,
         }
     }
 
     pub fn get_error(&self) -> Option<&RpcError> {
         match *self {
-            JsonRPC::Error(ref v) => Some(&v.error),
+            JsonRpc::Error(ref v) => Some(&v.error),
             _ => None,
         }
     }
@@ -229,7 +229,7 @@ mod tests {
 
     #[test]
     fn request() {
-        let jsonrpc = to_value(JsonRPC::request((), "test"))
+        let jsonrpc = to_value(JsonRpc::request((), "test"))
             .expect("Unable to turn request into a Json Value");
         assert_eq!(
             jsonrpc,
@@ -243,7 +243,7 @@ mod tests {
 
     #[test]
     fn request_with_params_vec() {
-        let jsonrpc = to_value(JsonRPC::request_with_params(
+        let jsonrpc = to_value(JsonRpc::request_with_params(
             46714,
             "test",
             json!([true, false, false, true]),
@@ -261,7 +261,7 @@ mod tests {
 
     #[test]
     fn request_with_params_map() {
-        let jsonrpc = to_value(JsonRPC::request_with_params(
+        let jsonrpc = to_value(JsonRpc::request_with_params(
             String::from("alpha-gamma-06714"),
             "test",
             json!({

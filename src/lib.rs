@@ -13,7 +13,7 @@ extern crate serde_derive;
 #[cfg_attr(test, macro_use)]
 extern crate serde_json;
 
-pub use self::jsonrpc::{Id, Params, JsonRPC};
+pub use self::jsonrpc::{Id, Params, JsonRpc};
 pub use self::error::{Error, ErrorCode, Result};
 
 mod jsonrpc;
