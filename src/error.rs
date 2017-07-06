@@ -4,9 +4,7 @@ use std::result;
 use std::fmt;
 use std::string::ToString;
 
-use serde_json::{Value, Map};
-use serde_json::Result as SerdeResult;
-use serde_json::value::ToJson;
+use serde_json::Value;
 
 /// Error Code
 #[derive(Clone, PartialEq, Debug)]
@@ -57,10 +55,12 @@ impl ToString for ErrorCode {
 }
 
 /// Error Object
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Error {
     pub code: i64,
     pub message: String,
+    #[serde(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub data: Option<Value>,
 }
 
@@ -92,45 +92,6 @@ impl Error {
     pub fn internal_error() -> Self {
         Self::new(ErrorCode::InternalError)
     }
-
-    pub fn from_value(val: &Value) -> Result<Error> {
-        let map = val.as_object();
-        if map.is_none() {
-            return Err(Error::invalid_request());
-        }
-        let map: &Map<String, Value> = map.unwrap();
-        let code = map.get("code").and_then(Value::as_i64);
-        if code.is_none() {
-            return Err(Error::invalid_request());
-        }
-        let message = map.get("message").and_then(Value::as_str).and_then(|s| Some(s.to_string()));
-        if message.is_none() {
-            return Err(Error::invalid_request());
-        }
-        let data = map.get("data").and_then(|d| Some(d.clone()));
-        Ok(Error {
-            code: code.unwrap(),
-            message: message.unwrap(),
-            data: data,
-        })
-    }
-}
-
-impl ToJson for Error {
-    fn to_json(&self) -> SerdeResult<Value> {
-        if let Some(ref data) = self.data {
-            Ok(json!({
-                "code": self.code,
-                "message": &self.message,
-                "data": data,
-            }))
-        } else {
-            Ok(json!({
-                "code": self.code,
-                "message": &self.message,
-            }))
-        }
-    }
 }
 
 impl error::Error for Error {
@@ -141,7 +102,7 @@ impl error::Error for Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(&self.to_json().unwrap(), f)
+        fmt::Display::fmt(&::serde_json::to_string(&self).unwrap(), f)
     }
 }
 

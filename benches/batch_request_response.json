@@ -1,0 +1,192 @@
+[
+  {
+    "jsonrpc": "2.0",
+    "method": "generateIntegers",
+    "params": {
+      "apiKey": "00000000-0000-0000-0000-000000000000",
+      "n": 10,
+      "min": 1,
+      "max": 10,
+      "replacement": true,
+      "base": 10
+    },
+    "id": 26558
+  },
+  {
+    "jsonrpc": "2.0",
+    "result": {
+      "random": {
+        "data": [
+          4,
+          9,
+          5,
+          4,
+          6,
+          6,
+          3,
+          7,
+          4,
+          5
+        ],
+        "completionTime": "2017-07-05 21:21:40Z"
+      },
+      "bitsUsed": 33,
+      "bitsLeft": 980134,
+      "requestsLeft": 199969,
+      "advisoryDelay": 50
+    },
+    "id": 26558
+  },
+  {
+    "jsonrpc": "2.0",
+    "method": "generateBlobs",
+    "params": {
+      "apiKey": "00000000-0000-0000-0000-000000000000",
+      "n": 10,
+      "size": 128,
+      "format": "base64"
+    },
+    "id": 10990
+  },
+  {
+    "jsonrpc": "2.0",
+    "result": {
+      "random": {
+        "data": [
+          "ngRWKdSUVvIM9sc+7bjZXA==",
+          "e69+ggk5kMrFKv8XC3lRPQ==",
+          "3LtawSbrY34Fweb+UJ7njw==",
+          "nYIO7sT6XibStp9EDWpKjA==",
+          "gyVy73GHNFudQF+4Q4GIRw==",
+          "KwKT8I8eKHPMdPRCrnxmMA==",
+          "CK0aeyCeCGpBi5TL93e5kA==",
+          "kYTp7cje1nJXDzmcTYAGMA==",
+          "G4eUSSbgd/po26bCJXeXyw==",
+          "PoDcIpXV/m2YFJdkDdcqxw=="
+        ],
+        "completionTime": "2017-07-05 21:22:08Z"
+      },
+      "bitsUsed": 1280,
+      "bitsLeft": 978854,
+      "requestsLeft": 199968,
+      "advisoryDelay": 30
+    },
+    "id": 10990
+  },
+  {
+    "jsonrpc": "2.0",
+    "method": "generateGaussians",
+    "params": {
+      "apiKey": "00000000-0000-0000-0000-000000000000",
+      "n": 10,
+      "mean": 0,
+      "standardDeviation": 1,
+      "significantDigits": 10
+    },
+    "id": 7132
+  },
+  {
+    "jsonrpc": "2.0",
+    "result": {
+      "random": {
+        "data": [
+          -0.7640049828,
+          0.4597772672,
+          -0.2265722651,
+          -1.311649744,
+          0.547075127,
+          1.147667783,
+          -0.794887715,
+          0.7614236016,
+          0.4734663559,
+          0.1922727601
+        ],
+        "completionTime": "2017-07-05 21:22:44Z"
+      },
+      "bitsUsed": 332,
+      "bitsLeft": 978522,
+      "requestsLeft": 199967,
+      "advisoryDelay": 10
+    },
+    "id": 7132
+  },
+  {
+    "jsonrpc": "2.0",
+    "method": "generateSignedStrings",
+    "params": {
+      "apiKey": "00000000-0000-0000-0000-000000000000",
+      "n": 10,
+      "length": 4,
+      "characters": "abcdefghijklmnopqrstuvwxyz",
+      "replacement": true
+    },
+    "id": 4068
+  },
+  {
+    "jsonrpc": "2.0",
+    "result": {
+      "random": {
+        "method": "generateSignedStrings",
+        "hashedApiKey": "oT3AdLMVZKajz0pgW/8Z+t5sGZkqQSOnAi1aB8Li0tXgWf8LolrgdQ1wn9sKx1ehxhUZmhwUIpAtM8QeRbn51Q==",
+        "n": 10,
+        "length": 4,
+        "characters": "abcdefghijklmnopqrstuvwxyz",
+        "replacement": true,
+        "data": [
+          "fhry",
+          "ghks",
+          "uiby",
+          "lpvk",
+          "aeam",
+          "xkza",
+          "flot",
+          "dfyu",
+          "ipgm",
+          "asiz"
+        ],
+        "completionTime": "2017-07-05 21:23:04Z",
+        "serialNumber": 2827248
+      },
+      "signature": "uyX/SFW5YGxm7bPN5jfkScRLjXMv/95hVVcfLoO9HCiD/hQuNir9ySVMDffLKHUB5qj6BbdmhYIrkj0jzDDKzFAbNd+TdT8YY5JPWIwMcjn5frdgZkdOyNZxSgF/pvJCX133nZUp2/sjB5ykrge2VBAovMBrCj8bQLgDCKgi6FxhgMiUOwWbPzVzO5cwulsKlKgNxdsHCrhd+aUg/vR/CoJduX+L38eMCGF5XKKCFpq7VJ1JyXU8JLP2ISFF5+U4NXNHmp2mVUnsH6VSZSQQfa/BjZhzbLLcFsmJq7ZCh5Uquobc5/pkX6Z+kXJmE4A6rWBUcIZY1DD6VQZdCWSm9KXDyFtcJDDxVR3g8r5pkcC7DG4FZ6w7Mu65KFAodKJpTdM8KWw6ciOkdZCr651tp0VUZgfdfP1usJC9r/L3GaaljEKzLMPcPktvl8N5a5OAcqDz6MUTawqN5HoMebY8A3g9ZGH0ZKwTUH4RhghMVdyHIVoc9enqaP5Erpoq1DS0e25zyBpBLpvxExIaQ5iq4baoyafGUVs3Q2P8hgIfvenz2U5FFrx7qQ6Rg7U6IsvkpaMXkWlmsUOOxDBRR/YN1URrzXfHhejT3zz24oNTD35gvdaVx5juz0gCwwX01i1YDX9Qc2Hx8TEjU+9YUtjn6RUh3bGpFanJbAe4YHD44+0=",
+      "bitsUsed": 188,
+      "bitsLeft": 978334,
+      "requestsLeft": 199966,
+      "advisoryDelay": 10
+    },
+    "id": 4068
+  },
+  {
+    "jsonrpc": "2.0",
+    "method": "generateUUIDs",
+    "params": {
+      "apiKey": "00000000-0000-0000-0000-000000000000",
+      "n": 10
+    },
+    "id": 7608
+  },
+  {
+    "jsonrpc": "2.0",
+    "result": {
+      "random": {
+        "data": [
+          "09532768-8ac4-4c6d-b3ce-838f7a1de7c8",
+          "fd28378f-f0b5-47de-a425-4cd30fd7e879",
+          "29e9c350-5b5e-4425-a4c6-bff2a49bdc1a",
+          "217b631f-16b4-4bcb-8dc7-64492f8219f8",
+          "8a7f04e5-b6ac-47b5-b793-5ec730a954ce",
+          "14837e11-8bfb-4bbf-9bdc-abbdac57f709",
+          "c89c45b1-7455-49da-b794-69e7ae390d86",
+          "3bb96b20-7cc1-41e1-9ae3-50e746d64c48",
+          "9fd07c0c-20c1-4a3c-b236-75169ef865e0",
+          "83aa0f07-cd79-4251-9b13-29eaa73a6983"
+        ],
+        "completionTime": "2017-07-05 21:23:35Z"
+      },
+      "bitsUsed": 1220,
+      "bitsLeft": 977114,
+      "requestsLeft": 199965,
+      "advisoryDelay": 60
+    },
+    "id": 7608
+  }
+]
