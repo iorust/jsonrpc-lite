@@ -56,20 +56,15 @@ impl ToString for ErrorCode {
 /// Error Object
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Error {
-    pub code: i64,
-    pub message: String,
+    code: i64,
+    message: String,
     #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub data: Option<Value>,
+    data: Option<Value>,
 }
-
 impl Error {
     fn new(code: ErrorCode) -> Self {
-        Error {
-            code: code.code(),
-            message: code.to_string(),
-            data: None,
-        }
+        Self::custom(code.code(), code.to_string())
     }
 
     pub fn parse_error() -> Self {
@@ -94,6 +89,31 @@ impl Error {
 
     pub fn server_error(code: i64) -> Self {
         Self::new(ServerError(code))
+    }
+
+    pub fn custom(code: i64, msg: String) -> Self {
+        Error {
+            code: code,
+            message: msg,
+            data: None,
+        }
+    }
+
+    pub fn with_data<D: Into<Option<Value>>>(mut self, data: D) -> Self {
+        self.data = data.into();
+        self
+    }
+
+    pub fn code(&self) -> i64 {
+        self.code
+    }
+
+    pub fn message(&self) -> String {
+        self.message.clone()
+    }
+
+    pub fn data(&self) -> Option<&Value> {
+        self.data.as_ref()
     }
 }
 
