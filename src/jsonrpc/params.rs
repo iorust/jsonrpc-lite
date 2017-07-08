@@ -10,6 +10,23 @@ pub enum Params {
     Map(Map<String, Value>),
     None,
 }
+impl Params {
+    pub fn get_array(&self) -> Option<&Vec<Value>> {
+        if let Params::Array(ref v) = *self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    pub fn get_map(&self) -> Option<&Map<String, Value>> {
+        if let Params::Map(ref v) = *self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+}
 
 impl From<Value> for Params {
     fn from(val: Value) -> Self {
