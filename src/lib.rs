@@ -6,15 +6,16 @@
        issue_tracker_base_url = "https://github.com/iorust/jsonrpc-lite/issues")]
 
 //! JSON-RPC 2.0 Specification serialization for Rust.
-
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 #[cfg_attr(test, macro_use)]
 extern crate serde_json;
 
-pub use self::jsonrpc::{Id, Params, JsonRpc};
-pub use self::error::{Error, ErrorCode, Result};
+pub use self::jsonrpc::{Id, Params, JsonRpc, RpcError};
+pub use self::error::{Result, Error};
+#[doc(hidden)]
+pub use serde_json::{Value, Map};
 
 mod jsonrpc;
 mod error;
