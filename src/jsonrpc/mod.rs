@@ -1,4 +1,4 @@
-use Value;
+use {Value, Result, Error as JsonRpcErr};
 
 mod id;
 mod params;

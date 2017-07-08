@@ -1,5 +1,6 @@
 use super::*;
-use serde_json::Result as SerdeResult;
+use serde_json::{from_str, from_slice, from_reader, from_value, Result as SerdeResult};
+use std::io::Read;
 
 /// JSON-RPC 2.0 Request object and Response object
 /// [JSON-RPC 2.0 Specification](http://www.jsonrpc.org/specification).
@@ -28,11 +29,7 @@ impl JsonRpc {
     }
 
     /// Creates a JSON-RPC 2.0 request object with params
-    pub fn request_with_params<I: Into<Id>, P: Into<Params>>(
-        id: I,
-        method: &str,
-        params: P,
-    ) -> Self {
+    pub fn request_with_params<I: Into<Id>, P: Into<Params>>(id: I, method: &str, params: P) -> Self {
         JsonRpc::Request(Request {
             jsonrpc: String::from("2.0"),
             method: String::from(method),
@@ -116,13 +113,101 @@ impl JsonRpc {
         }
     }
 
-    pub fn parse(input: &str) -> SerdeResult<Self> {
-        use serde_json::from_str;
-        from_str(input)
+    pub fn is_request(&self) -> bool {
+        if let JsonRpc::Request(_) = *self {
+            true
+        } else {
+            false
+        }
     }
 
-    pub fn parse_vec(input: &str) -> SerdeResult<Vec<Self>> {
-        use serde_json::from_str;
-        from_str(input)
+    pub fn is_notification(&self) -> bool {
+        if let JsonRpc::Notification(_) = *self {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn is_success(&self) -> bool {
+        if let JsonRpc::Success(_) = *self {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn is_error(&self) -> bool {
+        if let JsonRpc::Error(_) = *self {
+            true
+        } else {
+            false
+        }
+    }
+
+    fn get_version(&self) -> String {
+        match *self {
+            JsonRpc::Request(ref s) => s.jsonrpc.clone(),
+            JsonRpc::Notification(ref s) => s.jsonrpc.clone(),
+            JsonRpc::Success(ref s) => s.jsonrpc.clone(),
+            JsonRpc::Error(ref s) => s.jsonrpc.clone(),
+        }
+    }
+
+    fn check_version(self) -> Result<Self> {
+        let ver = self.get_version();
+        if ver != "2.0" {
+            Err(JsonRpcErr::InvalidVersionParsed(ver))
+        } else {
+            Ok(self)
+        }
+    }
+
+    fn parse(val: SerdeResult<Value>) -> Result<Self> {
+        if let Ok(val) = val {
+            if let Ok(val) = from_value::<Self>(val) {
+                Self::check_version(val)
+            } else {
+                Ok(Self::error((), RpcError::invalid_request()))
+            }
+        } else {
+            Ok(Self::error((), RpcError::parse_error()))
+        }
+    }
+
+    fn parse_vec(vals: SerdeResult<Vec<Value>>) -> Vec<Result<Self>> {
+        if let Ok(vals) = vals {
+            if vals.is_empty() {
+                vec![Ok(Self::error((), RpcError::invalid_request()))]
+            } else {
+                vals.into_iter().map(Ok).map(Self::parse).collect()
+            }
+        } else {
+            vec![Ok(Self::error((), RpcError::parse_error()))]
+        }
+    }
+
+    pub fn from_str(input: &str) -> Result<Self> {
+        Self::parse(from_str::<Value>(input))
+    }
+
+    pub fn from_str_vec(input: &str) -> Vec<Result<Self>> {
+        Self::parse_vec(from_str::<Vec<Value>>(input))
+    }
+
+    pub fn from_slice(input: &[u8]) -> Result<Self> {
+        Self::parse(from_slice::<Value>(input))
+    }
+
+    pub fn from_slice_vec(input: &[u8]) -> Vec<Result<Self>> {
+        Self::parse_vec(from_slice::<Vec<Value>>(input))
+    }
+
+    pub fn from_reader<R: Read>(input: R) -> Result<Self> {
+        Self::parse(from_reader::<R, Value>(input))
+    }
+
+    pub fn from_reader_vec<R: Read>(input: R) -> Vec<Result<Self>> {
+        Self::parse_vec(from_reader::<R, Vec<Value>>(input))
     }
 }
