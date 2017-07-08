@@ -4,11 +4,16 @@
 #[derive(Clone, Eq, PartialEq, Debug, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Id {
+    /// The Number Variant of a possible JSON-RPC Id
     Num(i64),
+    /// The String Variant of a possible JSON-RPC Id
     Str(String),
+    /// The Null Variant of a possible JSON-RPC Id
     None,
 }
+
 impl Id {
+    /// Returns the Id as an `i64` if it was an `i64`
     pub fn as_num(&self) -> Option<i64> {
         if let Id::Num(v) = *self {
             Some(v)
@@ -17,6 +22,7 @@ impl Id {
         }
     }
 
+    /// Returns the Id as a `String` if it was a `String`
     pub fn as_str(&self) -> Option<String> {
         if let Id::Str(ref v) = *self {
             Some(v.clone())
