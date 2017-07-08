@@ -19,39 +19,39 @@ pub enum JsonRpc {
 
 impl JsonRpc {
     /// Creates a JSON-RPC 2.0 request object without params
-    pub fn request<I: Into<Id>>(id: I, method: &str) -> Self {
+    pub fn request<I: Into<Id>, S: Into<String>>(id: I, method: S) -> Self {
         JsonRpc::Request(Request {
             jsonrpc: String::from("2.0"),
-            method: String::from(method),
+            method: method.into(),
             params: None,
             id: id.into(),
         })
     }
 
     /// Creates a JSON-RPC 2.0 request object with params
-    pub fn request_with_params<I: Into<Id>, P: Into<Params>>(id: I, method: &str, params: P) -> Self {
+    pub fn request_with_params<I: Into<Id>, P: Into<Params>, S: Into<String>>(id: I, method: S, params: P) -> Self {
         JsonRpc::Request(Request {
             jsonrpc: String::from("2.0"),
-            method: String::from(method),
+            method: method.into(),
             params: Some(params.into()),
             id: id.into(),
         })
     }
 
     /// Creates a JSON-RPC 2.0 notification object without params
-    pub fn notification(method: &str) -> Self {
+    pub fn notification<S: Into<String>>(method: S) -> Self {
         JsonRpc::Notification(Notification {
             jsonrpc: String::from("2.0"),
-            method: String::from(method),
+            method: method.into(),
             params: None,
         })
     }
 
     /// Creates a JSON-RPC 2.0 notification object with params
-    pub fn notification_with_params<P: Into<Params>>(method: &str, params: P) -> Self {
+    pub fn notification_with_params<P: Into<Params>, S: Into<String>>(method: S, params: P) -> Self {
         JsonRpc::Notification(Notification {
             jsonrpc: String::from("2.0"),
-            method: String::from(method),
+            method: method.into(),
             params: Some(params.into()),
         })
     }
