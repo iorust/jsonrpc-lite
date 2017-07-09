@@ -55,7 +55,7 @@ impl Display for ErrorCode {
 
 /// A Rust representation of a JSON-RPC Error Object
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
-pub struct Error {
+pub struct RpcError {
     code: i64,
     message: String,
     #[serde(default)]
@@ -63,7 +63,7 @@ pub struct Error {
     data: Option<Value>,
 }
 
-impl Error {
+impl RpcError {
     // Utility method for the no parameter
     // creation methods.
     fn new(code: ErrorCode) -> Self {
@@ -460,13 +460,13 @@ impl Error {
     }
 }
 
-impl error::Error for Error {
+impl error::Error for RpcError {
     fn description(&self) -> &str {
         &self.message
     }
 }
 
-impl Display for Error {
+impl Display for RpcError {
     fn fmt(&self, f: &mut Formatter) -> Result {
         Display::fmt(&to_string(&self).unwrap(), f)
     }

@@ -8,7 +8,7 @@ mod rpc_object;
 
 pub use self::id::Id;
 pub use self::params::Params;
-pub use self::error::Error as RpcError;
+pub use self::error::RpcError;
 use self::rpc_methods::{Request, Error, Notification, Success};
 pub use self::rpc_object::JsonRpc;
 
