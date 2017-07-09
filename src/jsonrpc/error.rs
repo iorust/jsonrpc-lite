@@ -47,9 +47,9 @@ impl ErrorCode {
     }
 }
 
-impl ToString for ErrorCode {
-    fn to_string(&self) -> String {
-        String::from(self.as_str())
+impl Display for ErrorCode {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        Display::fmt(self.as_str(), f)
     }
 }
 
