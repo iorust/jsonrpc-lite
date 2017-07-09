@@ -20,29 +20,29 @@ pub(self) fn test_value(val: Value, name: &'static str) -> (bool, JsonRpc) {
 fn call_pos_param() {
     assert_eq!(
         JsonRpc::from_str(r#"{"jsonrpc": "2.0", "method": "subtract", "params": [42, 23], "id": 1}"#).expect("Unable to make substract #1 request from_str"),
-        JsonRpc::request_with_params(1, "subtract", json!([42, 23])),
+        JsonRpc::request_with_params(1, "subtract", vec![42, 23]),
         "Failed to equate substract #1 request"
     );
     assert_eq!(
         JsonRpc::from_str(r#"{"jsonrpc": "2.0", "result": 19, "id": 1}"#).expect("Unable to make substract #1 success from_str"),
-        JsonRpc::success(1, &json!(19)),
+        JsonRpc::success(1, 19),
         "Failed to equate substract #1 success"
     );
 
     assert_eq!(
         JsonRpc::from_str(r#"{"jsonrpc": "2.0", "method": "subtract", "params": [23, 42], "id": 2}"#).expect("Unable to make substract #2 request from_str"),
-        JsonRpc::request_with_params(2, "subtract", json!([23, 42])),
+        JsonRpc::request_with_params(2, "subtract", vec![23, 42]),
         "Failed to equate substract #2 request"
     );
     assert_eq!(
         JsonRpc::from_str(r#"{"jsonrpc": "2.0", "result": -19, "id": 2}"#).expect("Unable to make substract #2 success from_str"),
-        JsonRpc::success(2, &json!(-19)),
+        JsonRpc::success(2, -19),
         "Failed to equate substract #2 success"
     );
 
     assert_ne!(
-        JsonRpc::request_with_params(1, "subtract", json!([42, 23])),
-        JsonRpc::request_with_params(1, "subtract", json!([23, 42])),
+        JsonRpc::request_with_params(1, "subtract", vec![42, 23]),
+        JsonRpc::request_with_params(1, "subtract", vec![23, 42]),
         "Equated params in wrong order"
     );
 
@@ -66,7 +66,7 @@ fn call_named_param() {
     assert_eq!(
         JsonRpc::from_str(r#"{"jsonrpc": "2.0", "result": 19, "id": 3}"#)
             .expect("Unable to make substract #3 success from_str"),
-        JsonRpc::success(3, &json!(19)),
+        JsonRpc::success(3, 19),
         "Failed to equate substract #3 success"
     );
 
@@ -79,7 +79,7 @@ fn call_named_param() {
     assert_eq!(
         JsonRpc::from_str(r#"{"jsonrpc": "2.0", "result": 19, "id": 4}"#)
             .expect("Unable to make substract #4 success from_str"),
-        JsonRpc::success(4, &json!(19)),
+        JsonRpc::success(4, 19),
         "Failed to equate substract #4 success"
     );
 

@@ -82,7 +82,7 @@ impl JsonRpc {
     /// );
     /// # }
     /// ```
-    pub fn request_with_params<I: Into<Id>, P: Into<Params>, S: Into<String>>(id: I, method: S, params: P) -> Self {
+    pub fn request_with_params<I: Into<Id>, S: Into<String>, P: Into<Params>>(id: I, method: S, params: P) -> Self {
         JsonRpc::Request(Request {
             jsonrpc: String::from("2.0"),
             method: method.into(),
@@ -187,10 +187,10 @@ impl JsonRpc {
     /// );
     /// # }
     /// ```
-    pub fn success<I: Into<Id>>(id: I, result: &Value) -> Self {
+    pub fn success<I: Into<Id>, V: Into<Value>>(id: I, result: V) -> Self {
         JsonRpc::Success(Success {
             jsonrpc: String::from("2.0"),
-            result: result.clone(),
+            result: result.into(),
             id: id.into(),
         })
     }

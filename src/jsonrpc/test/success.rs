@@ -5,7 +5,7 @@ fn single() {
     use serde_json::to_value;
 
     assert_eq!(
-        to_value(JsonRpc::success((), &json!(true))).expect("Unable to turn success_single into a Json Value"),
+        to_value(JsonRpc::success((), true)).expect("Unable to turn success_single into a Json Value"),
         json!({
             "id": null,
             "jsonrpc": "2.0",
@@ -20,7 +20,7 @@ fn vec() {
     use serde_json::to_value;
 
     assert_eq!(
-        to_value(JsonRpc::success(345, &json!([4, 9, 5, 4, 6, 6, 3, 7, 4, 5])))
+        to_value(JsonRpc::success(345, vec![4, 9, 5, 4, 6, 6, 3, 7, 4, 5]))
             .expect("Unable to turn success_vec into a Json Value"),
         json!({
             "id": 345,
@@ -36,7 +36,7 @@ fn map() {
     use serde_json::to_value;
 
     assert_eq!(
-        to_value(JsonRpc::success("delta-nova", &json!({
+        to_value(JsonRpc::success("delta-nova", json!({
             "random": {
                 "data": [4, 9, 5, 4, 6, 6, 3, 7, 4, 5],
                 "completionTime": "2017-07-05 21:21:40Z"
@@ -67,7 +67,7 @@ fn map() {
 #[test]
 fn get_id_unit() {
     assert_eq!(
-        JsonRpc::success((), &json!(true)).get_id(),
+        JsonRpc::success((), true).get_id(),
         Some(().into()),
         "Failed to get Id::None out of a JsonRpc::Success with Id::None"
     );
@@ -76,7 +76,7 @@ fn get_id_unit() {
 #[test]
 fn get_id_num() {
     assert_eq!(
-        JsonRpc::success(42, &json!(true)).get_id(),
+        JsonRpc::success(42, true).get_id(),
         Some(42.into()),
         "Failed to get Id::Num out of a JsonRpc::Success with Id::Num"
     );
@@ -85,7 +85,7 @@ fn get_id_num() {
 #[test]
 fn get_id_str() {
     assert_eq!(
-        JsonRpc::success("test", &json!(true)).get_id(),
+        JsonRpc::success("test", true).get_id(),
         Some("test".into()),
         "Failed to get Id::Str out of a JsonRpc::Success with Id::Str"
     );
@@ -93,18 +93,18 @@ fn get_id_str() {
 
 #[test]
 fn get_method() {
-    assert!(JsonRpc::success((), &json!(true)).get_method().is_none(), "Got a method form a JsonRpc::Success");
+    assert!(JsonRpc::success((), true).get_method().is_none(), "Got a method form a JsonRpc::Success");
 }
 
 #[test]
 fn get_params() {
-    assert!(JsonRpc::success((), &json!(true)).get_params().is_none(), "Got params form a JsonRpc::Success");
+    assert!(JsonRpc::success((), true).get_params().is_none(), "Got params form a JsonRpc::Success");
 }
 
 #[test]
 fn get_result_single() {
     assert_eq!(
-        JsonRpc::success((), &json!(true)).get_result(),
+        JsonRpc::success((), true).get_result(),
         Some(&json!(true)),
         "Failed to get a single result out of a JsonRpc::Success"
     );
@@ -113,7 +113,7 @@ fn get_result_single() {
 #[test]
 fn get_result_vec() {
     assert_eq!(
-        JsonRpc::success((), &json!([true, false, false, true])).get_result(),
+        JsonRpc::success((), vec![true, false, false, true]).get_result(),
         Some(&json!([true, false, false, true])),
         "Failed to get a vec result out of a JsonRpc::Success"
     );
@@ -122,7 +122,7 @@ fn get_result_vec() {
 #[test]
 fn get_result_map() {
     assert_eq!(
-        JsonRpc::success((), &json!({
+        JsonRpc::success((), json!({
             "data": "test",
             "things": null
         })).get_result(),
@@ -136,7 +136,7 @@ fn get_result_map() {
 
 #[test]
 fn get_error() {
-    assert!(JsonRpc::success((), &json!(true)).get_error().is_none(), "Got an error form a JsonRpc::Success");
+    assert!(JsonRpc::success((), true).get_error().is_none(), "Got an error form a JsonRpc::Success");
 }
 
 #[test]

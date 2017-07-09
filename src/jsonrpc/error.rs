@@ -320,10 +320,10 @@ impl RpcError {
     /// ```
     ///
     /// [spec]: http://www.jsonrpc.org/specification#error_object
-    pub fn custom(code: i64, msg: String) -> Self {
-        Error {
-            code: code,
-            message: msg,
+    pub fn custom<S: Into<String>>(code: i64, msg: S) -> Self {
+        RpcError {
+            code,
+            message: msg.into(),
             data: None,
         }
     }
@@ -395,8 +395,8 @@ impl RpcError {
     /// ```
     ///
     /// [value]: ../serde_json/value/enum.Value.html
-    pub fn with_data<D: Into<Option<Value>>>(mut self, data: D) -> Self {
-        self.data = data.into();
+    pub fn with_data<D: Into<Value>>(mut self, data: D) -> Self {
+        self.data = Some(data.into());
         self
     }
 
