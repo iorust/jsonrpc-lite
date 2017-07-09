@@ -85,6 +85,88 @@ impl Params {
     }
 }
 
+impl<T: Into<Value>> From<Vec<T>> for Params {
+    /// Convert a `Vec` to `Params`
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// # extern crate jsonrpc_lite;
+    /// #
+    /// # fn main() {
+    /// use jsonrpc_lite::Params;
+    ///
+    /// let v = vec!["lorem", "ipsum", "dolor"];
+    /// let x: Params = v.into();
+    /// # }
+    /// ```
+    fn from(val: Vec<T>) -> Self {
+        Params::Array(val.into_iter().map(Into::into).collect())
+    }
+}
+
+impl<'a, T: Clone + Into<Value>> From<&'a [T]> for Params {
+    /// Convert a slice to `Params`
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// # extern crate jsonrpc_lite;
+    /// #
+    /// # fn main() {
+    /// use jsonrpc_lite::Params;
+    ///
+    /// let v: &[&str] = &["lorem", "ipsum", "dolor"];
+    /// let x: Params = v.into();
+    /// # }
+    /// ```
+    fn from(f: &'a [T]) -> Self {
+        Params::Array(f.into_iter().cloned().map(Into::into).collect())
+    }
+}
+
+impl<T: Into<Value>> ::std::iter::FromIterator<T> for Params {
+    /// Convert an iteratable type to a `Params`
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// # extern crate jsonrpc_lite;
+    /// #
+    /// # fn main() {
+    /// use jsonrpc_lite::Params;
+    ///
+    /// let v = std::iter::repeat(42).take(5);
+    /// let x: Params = v.collect();
+    /// # }
+    /// ```
+    ///
+    /// ```rust
+    /// # extern crate jsonrpc_lite;
+    /// #
+    /// # fn main() {
+    /// use jsonrpc_lite::Params;
+    ///
+    /// let v: Vec<_> = vec!["lorem", "ipsum", "dolor"];
+    /// let x: Params = v.into_iter().collect();
+    /// # }
+    /// ```
+    ///
+    /// ```rust
+    /// # extern crate jsonrpc_lite;
+    /// #
+    /// # fn main() {
+    /// use std::iter::FromIterator;
+    /// use jsonrpc_lite::Params;
+    ///
+    /// let x: Params = Params::from_iter(vec!["lorem", "ipsum", "dolor"]);
+    /// # }
+    /// ```
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
+        Params::Array(iter.into_iter().map(|x| x.into()).collect::<Vec<Value>>())
+    }
+}
+
 impl From<Value> for Params {
     /// Convert a [`Value`][value] to `Params`.
     ///
@@ -120,12 +202,6 @@ impl From<Value> for Params {
             Object(v) => Params::Map(v),
             _ => Params::None,
         }
-    }
-}
-
-impl From<Vec<Value>> for Params {
-    fn from(val: Vec<Value>) -> Self {
-        Params::Array(val)
     }
 }
 
