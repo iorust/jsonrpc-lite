@@ -4,7 +4,7 @@ use serde_json::{Map, Value, Result as SerdeResult};
 /// An identifier established by the Client that MUST contain a String, Number,
 /// or NULL value if included. If it is not included it is assumed to be a notification.
 /// The value SHOULD normally not be Null and Numbers SHOULD NOT contain fractional parts
-#[derive(Clone, Eq, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Eq, PartialEq, Debug, Serialize, Deserialize, Hash)]
 #[serde(untagged)]
 pub enum Id {
     Num(i64),
@@ -170,6 +170,15 @@ impl JsonRpc {
             error,
             id: id.into(),
         })
+    }
+
+    pub fn get_version(&self) -> Option<&str> {
+        match self {
+            JsonRpc::Notification(ref v) => Some(&v.jsonrpc),
+            JsonRpc::Request(ref v) => Some(&v.jsonrpc),
+            JsonRpc::Success(ref v) => Some(&v.jsonrpc),
+            JsonRpc::Error(ref v) => Some(&v.jsonrpc),
+        }
     }
 
     pub fn get_id(&self) -> Option<Id> {
