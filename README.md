@@ -12,7 +12,6 @@ JSON-RPC 2.0 Specification serialization for Rust.
 ### Documentation https://docs.rs/jsonrpc-lite
 
 ```Rust
-extern crate jsonrpc_lite;
 use jsonrpc_lite::{JsonRPC, Id, Params, Error, ErrorCode, Result};
 ```
 
