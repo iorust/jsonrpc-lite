@@ -142,6 +142,25 @@ impl From<Map<String, Value>> for Params {
     }
 }
 
+impl From<Params> for Value {
+    /// Converts a Params to a serde_json Value
+    ///
+    /// # Arguments
+    ///
+    /// * `val` - The Params to convert
+    ///
+    /// # Returns
+    ///
+    /// A new serde_json Value
+    fn from(val: Params) -> Self {
+        match val {
+            Params::Array(values) => values.into(),
+            Params::Map(map) => map.into(),
+            Params::None(()) => Value::Null
+        }
+    }
+}
+
 /// JSON-RPC 2.0 Request object
 ///
 /// A request object represents a call to a method on the server.
