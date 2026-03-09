@@ -152,12 +152,23 @@ pub struct Request {
     /// JSON-RPC protocol version (always "2.0")
     jsonrpc: String,
     /// Name of the method to be invoked
-    method: String,
+    pub method: String,
     /// Parameters to be used during the invocation of the method
     #[serde(skip_serializing_if = "Option::is_none")]
-    params: Option<Params>,
+    pub params: Option<Params>,
     /// Client-established identifier for this request
-    id: Id,
+    pub id: Id,
+}
+
+impl Request {
+    /// Gets the JSON-RPC protocol version
+    ///
+    /// # Returns
+    ///
+    /// The protocol version string ("2.0") or None if not available
+    pub fn get_version(&self) -> &str {
+        &self.version
+    }
 }
 
 /// JSON-RPC 2.0 Notification object
@@ -169,10 +180,21 @@ pub struct Notification {
     /// JSON-RPC protocol version (always "2.0")
     jsonrpc: String,
     /// Name of the method to be invoked
-    method: String,
+    pub method: String,
     /// Parameters to be used during the invocation of the method
     #[serde(skip_serializing_if = "Option::is_none")]
-    params: Option<Params>,
+    pub params: Option<Params>,
+}
+
+impl Notification {
+    /// Gets the JSON-RPC protocol version
+    ///
+    /// # Returns
+    ///
+    /// The protocol version string ("2.0") or None if not available
+    pub fn get_version(&self) -> &str {
+        &self.version
+    }
 }
 
 /// JSON-RPC 2.0 Success Response object
@@ -184,9 +206,20 @@ pub struct Success {
     /// JSON-RPC protocol version (always "2.0")
     jsonrpc: String,
     /// The result of the method call
-    result: Value,
+    pub result: Value,
     /// Client-established identifier matching the request
-    id: Id,
+    pub id: Id,
+}
+
+impl Success {
+    /// Gets the JSON-RPC protocol version
+    ///
+    /// # Returns
+    ///
+    /// The protocol version string ("2.0") or None if not available
+    pub fn get_version(&self) -> &str {
+        &self.version
+    }
 }
 
 /// JSON-RPC 2.0 Error Response object
@@ -198,9 +231,20 @@ pub struct Error {
     /// JSON-RPC protocol version (always "2.0")
     jsonrpc: String,
     /// The error that occurred
-    error: RpcError,
+    pub error: RpcError,
     /// Client-established identifier matching the request
-    id: Id,
+    pub id: Id,
+}
+
+impl Error {
+    /// Gets the JSON-RPC protocol version
+    ///
+    /// # Returns
+    ///
+    /// The protocol version string ("2.0") or None if not available
+    pub fn get_version(&self) -> &str {
+        &self.version
+    }
 }
 
 /// JSON-RPC 2.0 Request object and Response object
