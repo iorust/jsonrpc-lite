@@ -156,7 +156,7 @@ impl From<Params> for Value {
         match val {
             Params::Array(values) => values.into(),
             Params::Map(map) => map.into(),
-            Params::None(()) => Value::Null
+            Params::None(()) => Value::Null,
         }
     }
 }
@@ -186,7 +186,7 @@ impl Request {
     ///
     /// The protocol version string ("2.0") or None if not available
     pub fn get_version(&self) -> &str {
-        &self.version
+        &self.jsonrpc
     }
 }
 
@@ -212,7 +212,7 @@ impl Notification {
     ///
     /// The protocol version string ("2.0") or None if not available
     pub fn get_version(&self) -> &str {
-        &self.version
+        &self.jsonrpc
     }
 }
 
@@ -237,7 +237,7 @@ impl Success {
     ///
     /// The protocol version string ("2.0") or None if not available
     pub fn get_version(&self) -> &str {
-        &self.version
+        &self.jsonrpc
     }
 }
 
@@ -262,7 +262,7 @@ impl Error {
     ///
     /// The protocol version string ("2.0") or None if not available
     pub fn get_version(&self) -> &str {
-        &self.version
+        &self.jsonrpc
     }
 }
 
